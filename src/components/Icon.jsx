@@ -11,6 +11,7 @@ import chevronLeft from '@material-symbols/svg-300/sharp/chevron_left.svg'
 import chevronRight from '@material-symbols/svg-300/sharp/chevron_right.svg'
 import close from '@material-symbols/svg-300/sharp/close.svg'
 import deleteIcon from '@material-symbols/svg-300/sharp/delete.svg'
+import deleteForever from '@material-symbols/svg-300/sharp/delete_forever.svg'
 import editNote from '@material-symbols/svg-300/sharp/edit_note.svg'
 import editNoteFill from '@material-symbols/svg-300/sharp/edit_note-fill.svg'
 import monitoring from '@material-symbols/svg-300/sharp/monitoring.svg'
@@ -23,6 +24,7 @@ import savingsFill from '@material-symbols/svg-300/sharp/savings-fill.svg'
 import schedule from '@material-symbols/svg-300/sharp/schedule.svg'
 import scheduleFill from '@material-symbols/svg-300/sharp/schedule-fill.svg'
 import syncProblem from '@material-symbols/svg-300/sharp/sync_problem.svg'
+import warning from '@material-symbols/svg-300/sharp/warning.svg'
 
 const icons = {
   account_balance: accountBalance,
@@ -36,13 +38,15 @@ const icons = {
   chevron_right: chevronRight,
   close,
   delete: deleteIcon,
+  delete_forever: deleteForever,
   edit_note: editNote,
   monitoring,
   notes,
   payments,
   savings,
   schedule,
-  sync_problem: syncProblem
+  sync_problem: syncProblem,
+  warning
 }
 const filledIcons = {
   account_balance: accountBalanceFill,

@@ -1,35 +1,37 @@
 import { useEffect, useState } from 'react'
-import { CHANNEL_EMOJIS, TYPE_ICONS } from '../lib.js'
+import { TYPE_ICONS } from '../lib.js'
 import { Icon } from './Icon.jsx'
 
-export function ChannelSheet({ channel, onClose, onSave }) {
+export function ChannelSheet({ channel, onClose, onSave, onDelete }) {
   const [name, setName] = useState('')
-  const [emoji, setEmoji] = useState(CHANNEL_EMOJIS[0])
   const [type, setType] = useState('cash')
+  const [deleteStep, setDeleteStep] = useState(0)
 
   useEffect(() => {
     setName(channel?.name || '')
-    setEmoji(channel?.emoji || CHANNEL_EMOJIS[0])
     setType(channel?.type || 'cash')
+    setDeleteStep(0)
   }, [channel])
 
   return (
     <div className="sheet channel-sheet">
       <header className="sheet-bar">
         <button className="icon-button" onClick={onClose}><Icon name="close" /></button>
-        <button className="icon-button primary" onClick={() => onSave({ name, emoji, type })}><Icon name="check" /></button>
+        {channel && <button className={`icon-button danger delete-step-${deleteStep}`} onClick={() => deleteStep < 2 ? setDeleteStep(deleteStep + 1) : onDelete()}>
+          <Icon name={deleteStep === 0 ? 'delete' : deleteStep === 1 ? 'warning' : 'delete_forever'} />
+        </button>}
+        <button className="icon-button primary" onClick={() => onSave({ name, type })}><Icon name="check" /></button>
       </header>
       <div className="channel-name">
-        <span>{emoji}</span>
+        <Icon name={TYPE_ICONS[type]} filled />
         <input value={name} onChange={event => setName(event.target.value)} autoFocus maxLength="48" />
       </div>
-      <div className="channel-emojis">
-        {CHANNEL_EMOJIS.map(value => <button key={value} className={emoji === value ? 'active' : ''} onClick={() => setEmoji(value)}>{value}</button>)}
-      </div>
       <div className="type-switch">
-        {Object.entries(TYPE_ICONS).map(([value, icon]) => (
-          <button key={value} className={type === value ? 'active' : ''} onClick={() => setType(value)}><Icon name={icon} filled={type === value} /></button>
-        ))}
+        <div className="type-switch-inner">
+          {Object.entries(TYPE_ICONS).map(([value, icon]) => (
+            <button key={value} className={type === value ? 'active' : ''} onClick={() => setType(value)}><Icon name={icon} filled={type === value} /></button>
+          ))}
+        </div>
       </div>
     </div>
   )

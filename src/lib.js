@@ -13,7 +13,6 @@ export const EMOJIS = [
   '❤️','🧡','💛','💚','💙','💜','🖤','🤍'
 ]
 
-export const CHANNEL_EMOJIS = ['👛','💵','🪙','🏦','💳','🐷','🧾','📈','🏠','🚗','💼','🫙','🌱','🪜','🧱','🌀']
 export const TYPE_ICONS = { cash: 'payments', savings: 'savings', accrued: 'schedule' }
 export const MODE_ICONS = { cash: 'payments', total: 'account_balance', net: 'all_inclusive' }
 

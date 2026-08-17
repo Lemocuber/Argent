@@ -25,7 +25,6 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     account_id TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
     name TEXT NOT NULL DEFAULT '',
-    emoji TEXT NOT NULL,
     type TEXT NOT NULL CHECK(type IN ('cash', 'savings', 'accrued')),
     position INTEGER NOT NULL DEFAULT 0,
     archived INTEGER NOT NULL DEFAULT 0,
@@ -65,7 +64,7 @@ app.get('/api/accounts/:accountId/state', (req, res) => {
   if (!accountExists(accountId)) return res.sendStatus(404)
   res.json({
     channels: db.prepare(`
-      SELECT id, name, emoji, type, position, archived
+      SELECT id, name, type, position, archived
       FROM channels WHERE account_id = ? ORDER BY archived, position, id
     `).all(accountId),
     entries: db.prepare(`
@@ -79,11 +78,11 @@ app.get('/api/accounts/:accountId/state', (req, res) => {
 
 app.post('/api/accounts/:accountId/channels', (req, res) => {
   const { accountId } = req.params
-  const { name = '', emoji, type } = req.body
-  if (!accountExists(accountId) || typeof emoji !== 'string' || emoji.length > 16 || !['cash', 'savings', 'accrued'].includes(type)) return res.sendStatus(400)
+  const { name = '', type } = req.body
+  if (!accountExists(accountId) || !['cash', 'savings', 'accrued'].includes(type)) return res.sendStatus(400)
   const position = db.prepare('SELECT COALESCE(MAX(position), -1) + 1 AS value FROM channels WHERE account_id = ?').get(accountId).value
-  const result = db.prepare('INSERT INTO channels (account_id, name, emoji, type, position) VALUES (?, ?, ?, ?, ?)').run(accountId, String(name).slice(0, 48), emoji, type, position)
-  res.status(201).json(db.prepare('SELECT id, name, emoji, type, position, archived FROM channels WHERE id = ?').get(result.lastInsertRowid))
+  const result = db.prepare('INSERT INTO channels (account_id, name, type, position) VALUES (?, ?, ?, ?)').run(accountId, String(name).slice(0, 48), type, position)
+  res.status(201).json(db.prepare('SELECT id, name, type, position, archived FROM channels WHERE id = ?').get(result.lastInsertRowid))
 })
 
 app.patch('/api/accounts/:accountId/channels/:channelId', (req, res) => {
@@ -92,12 +91,16 @@ app.patch('/api/accounts/:accountId/channels/:channelId', (req, res) => {
   if (!channel) return res.sendStatus(404)
   const next = {
     name: typeof req.body.name === 'string' ? req.body.name.slice(0, 48) : channel.name,
-    emoji: typeof req.body.emoji === 'string' && req.body.emoji.length <= 16 ? req.body.emoji : channel.emoji,
     type: ['cash', 'savings', 'accrued'].includes(req.body.type) ? req.body.type : channel.type,
     archived: req.body.archived === undefined ? channel.archived : Number(Boolean(req.body.archived))
   }
-  db.prepare('UPDATE channels SET name = ?, emoji = ?, type = ?, archived = ? WHERE id = ?').run(next.name, next.emoji, next.type, next.archived, channelId)
+  db.prepare('UPDATE channels SET name = ?, type = ?, archived = ? WHERE id = ?').run(next.name, next.type, next.archived, channelId)
   res.json({ id: Number(channelId), ...next, position: channel.position })
+})
+
+app.delete('/api/accounts/:accountId/channels/:channelId', (req, res) => {
+  const result = db.prepare('DELETE FROM channels WHERE id = ? AND account_id = ?').run(req.params.channelId, req.params.accountId)
+  res.sendStatus(result.changes ? 204 : 404)
 })
 
 app.put('/api/accounts/:accountId/entries', (req, res) => {

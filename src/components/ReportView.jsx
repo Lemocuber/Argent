@@ -26,15 +26,17 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
           const delta = exact && prior ? exact.amountCents - prior.amountCents : null
           return (
             <div className="channel-row" key={channel.id}>
+              <button className="channel-entry" onClick={() => onEntry(channel)}>
+                <span className="channel-value">
+                  <strong>{formatMoney(balanceOn(entries, channel.id, date))}</strong>
+                  <small className={delta > 0 ? 'positive' : delta < 0 ? 'negative' : ''}>
+                    {delta !== null ? <>{delta > 0 ? '+' : ''}{formatMoney(delta)}</> : !exact ? <i /> : null}
+                  </small>
+                </span>
+              </button>
               <button className="channel-id" onClick={() => onEditChannel(channel)}>
-                <span>{channel.emoji}</span>
                 <i><Icon name={TYPE_ICONS[channel.type]} /></i>
                 {channel.name && <b>{channel.name}</b>}
-              </button>
-              <button className="channel-value" onClick={() => onEntry(channel)}>
-                <strong>{formatMoney(balanceOn(entries, channel.id, date))}</strong>
-                {delta !== null && <small className={delta > 0 ? 'positive' : delta < 0 ? 'negative' : ''}>{delta > 0 ? '+' : ''}{formatMoney(delta)}</small>}
-                {!exact && <em />}
               </button>
             </div>
           )

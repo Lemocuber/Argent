@@ -8,6 +8,7 @@ import { ReportView } from './components/ReportView.jsx'
 import { today } from './lib.js'
 
 const BalanceChart = lazy(() => import('./components/BalanceChart.jsx').then(module => ({ default: module.BalanceChart })))
+const Frame = ({ children }) => <div className="device-frame"><div className="device-content">{children}</div></div>
 
 const storedAccount = localStorage.getItem('argent.account')
 
@@ -41,31 +42,34 @@ export default function App() {
     await load(account)
   }
 
-  if (!account) return <EmojiGate onEnter={enter} />
-  if (!ready) return <div className="boot"><i /></div>
-  if (failed) return <button className="fatal" onClick={() => location.reload()}><Icon name="sync_problem" /></button>
+  if (!account) return <Frame><EmojiGate onEnter={enter} /></Frame>
+  if (!ready) return <Frame><div className="boot"><i /></div></Frame>
+  if (failed) return <Frame><button className="fatal" onClick={() => location.reload()}><Icon name="sync_problem" /></button></Frame>
 
   return (
-    <main className="app-shell">
-      {view === 'chart'
-        ? <Suspense fallback={<div className="chart-pending"><i /></div>}><BalanceChart {...state} mode={mode} onMode={setMode} onEmpty={() => setView('report')} /></Suspense>
-        : <ReportView {...state} date={date} onDate={setDate} onAdd={() => setChannelSheet(null)} onEditChannel={setChannelSheet} onEntry={setEntryChannel} />}
+    <Frame>
+      <main className="app-shell">
+        {view === 'chart'
+          ? <Suspense fallback={<div className="chart-pending"><i /></div>}><BalanceChart {...state} mode={mode} onMode={setMode} onEmpty={() => setView('report')} /></Suspense>
+          : <ReportView {...state} date={date} onDate={setDate} onAdd={() => setChannelSheet(null)} onEditChannel={setChannelSheet} onEntry={setEntryChannel} />}
 
-      <nav className="app-nav">
-        <button className={view === 'chart' ? 'active' : ''} onClick={() => setView('chart')}><Icon name="monitoring" filled={view === 'chart'} /></button>
-        <button className={view === 'report' ? 'active' : ''} onClick={() => setView('report')}><Icon name="edit_note" filled={view === 'report'} /></button>
-      </nav>
+        <nav className="app-nav">
+          <button className={view === 'chart' ? 'active' : ''} onClick={() => setView('chart')}><Icon name="monitoring" filled={view === 'chart'} /></button>
+          <button className={view === 'report' ? 'active' : ''} onClick={() => setView('report')}><Icon name="edit_note" filled={view === 'report'} /></button>
+        </nav>
 
-      {channelSheet !== undefined && (
-        <ChannelSheet channel={channelSheet} onClose={() => setChannelSheet(undefined)} onSave={value => mutate(() => channelSheet
-          ? api.updateChannel(account, channelSheet.id, value)
-          : api.createChannel(account, value)).then(() => setChannelSheet(undefined))} />
-      )}
-      {entryChannel && (
-        <EntrySheet channel={entryChannel} date={date} entries={state.entries} onClose={() => setEntryChannel(null)}
-          onSave={value => mutate(() => api.saveEntry(account, value)).then(() => setEntryChannel(null))}
-          onDelete={entryId => mutate(() => api.deleteEntry(account, entryId)).then(() => setEntryChannel(null))} />
-      )}
-    </main>
+        {channelSheet !== undefined && (
+          <ChannelSheet channel={channelSheet} onClose={() => setChannelSheet(undefined)} onSave={value => mutate(() => channelSheet
+            ? api.updateChannel(account, channelSheet.id, value)
+            : api.createChannel(account, value)).then(() => setChannelSheet(undefined))}
+            onDelete={() => mutate(() => api.deleteChannel(account, channelSheet.id)).then(() => setChannelSheet(undefined))} />
+        )}
+        {entryChannel && (
+          <EntrySheet channel={entryChannel} date={date} entries={state.entries} onClose={() => setEntryChannel(null)}
+            onSave={value => mutate(() => api.saveEntry(account, value)).then(() => setEntryChannel(null))}
+            onDelete={entryId => mutate(() => api.deleteEntry(account, entryId)).then(() => setEntryChannel(null))} />
+        )}
+      </main>
+    </Frame>
   )
 }

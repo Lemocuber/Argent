@@ -22,12 +22,16 @@ Accrued values may be positive receivables or negative liabilities. Negative val
 
 An entry is a dated balance snapshot for one channel. Dates are displayed as `YYYY/MM/DD`. Missing entries carry the most recent balance forward without creating synthetic records. Users may create, edit, or remove historical snapshots. Change is calculated against the prior explicit snapshot.
 
+Channels are identified in money views by their type icon and user-entered name. Tapping that identity region edits the channel; tapping the remaining row opens balance entry. Deleting a channel permanently removes its snapshots after an icon-only two-stage confirmation.
+
 ## Interface
 
-The interface is mobile-first, monochrome, monoline, divider-based, and uses chamfered geometry instead of rounded cards. Authored interface text is avoided. Material icons and emojis express controls and state. Visible text is limited to user-entered channel names and notes, dates, and numbers unless explicitly approved later.
+The interface is mobile-first, monochrome, monoline, divider-based, and uses chamfered geometry instead of rounded cards. Authored interface text is avoided. Material icons express controls and state; emojis are reserved for account identity. Visible text is limited to user-entered channel names and notes, dates, and numbers unless explicitly approved later.
 
-The browser page disables global zoom, selection, context menus, and tap highlighting. The chart supports tap inspection, dragging, and pinch zoom. The frontend is prepared as a PWA for later webview packaging.
+The browser page disables global zoom, selection, context menus, and tap highlighting. Chart nodes support crosshair inspection through multiline detail boxes. The plot itself does not zoom or pan; those gestures belong to a separate date rail below it, where pinch changes the time span and dragging moves through time. Landscape screens center the full interface in a narrow mobile rail. The frontend is prepared as a PWA for later webview packaging.
 
 ## Technical shape
 
 React and Vite provide the frontend. Express provides the API. SQLite is the single-file store in WAL mode. Accounts, channels, and entries form the core data model. Production makes at most one dated SQLite backup per day.
+
+Argent provides no backward- or forward-compatibility guarantees. Data schemas, APIs, and stored state may be replaced outright instead of migrated or adapted.

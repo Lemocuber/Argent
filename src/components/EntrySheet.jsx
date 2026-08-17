@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { displayDate, entryOn, formatMoney, parseDate, parseMoney, priorEntry } from '../lib.js'
+import { displayDate, entryOn, formatMoney, parseDate, parseMoney, priorEntry, TYPE_ICONS } from '../lib.js'
 import { Icon } from './Icon.jsx'
 
 export function EntrySheet({ channel, date, entries, onClose, onSave, onDelete }) {
@@ -31,7 +31,7 @@ export function EntrySheet({ channel, date, entries, onClose, onSave, onDelete }
         {existing && <button className="icon-button danger" onClick={() => onDelete(existing.id)}><Icon name="delete" /></button>}
         <button className="icon-button primary" onClick={save} disabled={!parseDate(entryDate) || cents === null}><Icon name="check" /></button>
       </header>
-      <div className="entry-channel"><span>{channel.emoji}</span>{channel.name && <b>{channel.name}</b>}</div>
+      <div className="entry-channel"><Icon name={TYPE_ICONS[channel.type]} filled />{channel.name && <b>{channel.name}</b>}</div>
       <div className="date-line">
         <Icon name="calendar_today" />
         <input value={entryDate} inputMode="numeric" onChange={event => setEntryDate(event.target.value)} maxLength="10" />
