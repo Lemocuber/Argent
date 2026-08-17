@@ -269,13 +269,12 @@ input, textarea {
   display: grid;
   height: calc(72px + env(safe-area-inset-top));
   padding-top: env(safe-area-inset-top);
-  grid-template-columns: 50px 1fr 50px 58px;
+  grid-template-columns: 50px 1fr 50px;
   border-bottom: 1px solid var(--ink);
   background: var(--paper);
 }
 .report-date button { display: grid; place-items: center; }
 .report-date input { width: 100%; text-align: center; font-size: 14px; }
-.report-date .add-channel { border-left: 1px solid var(--ink); }
 .channel-list { padding-bottom: 20px; }
 .channel-row { position: relative; min-height: 88px; border-bottom: 1px solid var(--rule); }
 .channel-entry { position: absolute; z-index: 0; inset: 0; display: flex; justify-content: flex-end; text-align: right; }
@@ -301,7 +300,7 @@ input, textarea {
 .channel-value small i { width: 12px; border-bottom: 1px solid #aaa8a1; }
 .positive { color: var(--green); }
 .negative { color: var(--red); }
-.empty-list { position: relative; isolation: isolate; display: grid; width: 84px; height: 84px; margin: 24vh auto 0; place-items: center; border: 0; background: var(--ink); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); }
+.add-channel-row { display: grid; width: 100%; min-height: 88px; place-items: center; border-bottom: 1px solid var(--rule); }
 
 /* sheets */
 .sheet {

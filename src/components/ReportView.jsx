@@ -17,7 +17,6 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
         <button onClick={() => onDate(shiftDate(date, -1))}><Icon name="chevron_left" /></button>
         <input value={draftDate} inputMode="numeric" maxLength="10" onChange={event => setDraftDate(event.target.value)} onBlur={commitDate} onKeyDown={event => event.key === 'Enter' && event.currentTarget.blur()} />
         <button onClick={() => onDate(shiftDate(date, 1))}><Icon name="chevron_right" /></button>
-        <button className="add-channel" onClick={onAdd}><Icon name="add" /></button>
       </header>
       <div className="channel-list">
         {channels.filter(channel => !channel.archived).map(channel => {
@@ -41,7 +40,7 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
             </div>
           )
         })}
-        {!channels.filter(channel => !channel.archived).length && <button className="empty-list" onClick={onAdd}><Icon name="add" /></button>}
+        <button className="add-channel-row" onClick={onAdd}><Icon name="add" /></button>
       </div>
     </section>
   )

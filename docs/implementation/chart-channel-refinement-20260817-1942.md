@@ -23,3 +23,5 @@ Raised the detail date to the same size as note text so it no longer sits at the
 Kept graph dots at their normal size while focused, without changing pointer inspection or the selected-day details.
 
 Inset the main balance slightly from its right edge so tightly spaced digits no longer clip.
+
+Moved channel creation out of the record-page header and into a permanent final row in the channel list, including when the list is empty.
