@@ -4,7 +4,7 @@ Argent is a lightweight balance journal for mobile. It opens to history and visu
 
 ## Identity
 
-An account is identified by a 12-emoji sequence selected from a fixed 8-by-12 board. The sequence is encoded to a stable identifier and stored locally after first use so the returning device enters automatically. An unknown identifier creates an account.
+An account is identified by a 12-emoji sequence selected from a fixed 8-by-12 board. The sequence is encoded to a stable identifier and stored locally after first use so the returning device enters automatically. An unknown identifier creates an account. Tapping the same bottom navigation item ten times within three seconds clears the locally saved identifier and reloads the emoji board without deleting server-side account data.
 
 ## Money
 

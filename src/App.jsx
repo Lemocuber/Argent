@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { api } from './api.js'
 import { ChannelSheet } from './components/ChannelSheet.jsx'
 import { EmojiGate } from './components/EmojiGate.jsx'
@@ -22,6 +22,7 @@ export default function App() {
   const [entryChannel, setEntryChannel] = useState(null)
   const [ready, setReady] = useState(false)
   const [failed, setFailed] = useState(false)
+  const navTaps = useRef({ view: null, started: 0, count: 0 })
 
   const load = async id => setState(await api.state(id))
   const enter = async id => {
@@ -41,6 +42,18 @@ export default function App() {
     await action()
     await load(account)
   }
+  const navigate = next => {
+    const now = performance.now()
+    const taps = navTaps.current
+    if (taps.view !== next || now - taps.started > 3000) Object.assign(taps, { view: next, started: now, count: 1 })
+    else taps.count += 1
+    if (taps.count >= 10) {
+      localStorage.removeItem('argent.account')
+      location.reload()
+      return
+    }
+    setView(next)
+  }
 
   if (!account) return <Frame><EmojiGate onEnter={enter} /></Frame>
   if (!ready) return <Frame><div className="boot"><i /></div></Frame>
@@ -54,8 +67,8 @@ export default function App() {
           : <ReportView {...state} date={date} onDate={setDate} onAdd={() => setChannelSheet(null)} onEditChannel={setChannelSheet} onEntry={setEntryChannel} />}
 
         <nav className="app-nav">
-          <button className={view === 'chart' ? 'active' : ''} onClick={() => setView('chart')}><Icon name="monitoring" filled={view === 'chart'} /></button>
-          <button className={view === 'report' ? 'active' : ''} onClick={() => setView('report')}><Icon name="edit_note" filled={view === 'report'} /></button>
+          <button className={view === 'chart' ? 'active' : ''} onClick={() => navigate('chart')}><Icon name="monitoring" filled={view === 'chart'} /></button>
+          <button className={view === 'report' ? 'active' : ''} onClick={() => navigate('report')}><Icon name="edit_note" filled={view === 'report'} /></button>
         </nav>
 
         {channelSheet !== undefined && (
