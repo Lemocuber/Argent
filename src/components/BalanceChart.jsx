@@ -64,7 +64,7 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
       useUTC: true,
       animationDuration: 520,
       animationEasing: 'cubicOut',
-      grid: { left: 10, right: 10, top: 22, bottom: 10, containLabel: true },
+      grid: { left: '12.5%', right: 0, top: 22, bottom: 10, containLabel: false },
       xAxis: {
         type: 'time',
         boundaryGap: false,
