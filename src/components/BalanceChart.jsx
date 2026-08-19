@@ -1,5 +1,5 @@
 import * as echarts from 'echarts/core'
-import { LineChart, ScatterChart } from 'echarts/charts'
+import { LineChart } from 'echarts/charts'
 import { DataZoomInsideComponent, GridComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -7,7 +7,7 @@ import { displayDate, formatDelta, formatMoney, MODE_ICONS, shiftDate, today } f
 import { Icon } from './Icon.jsx'
 import { TimelineRail } from './TimelineRail.jsx'
 
-echarts.use([LineChart, ScatterChart, DataZoomInsideComponent, GridComponent, TooltipComponent, CanvasRenderer])
+echarts.use([LineChart, DataZoomInsideComponent, GridComponent, TooltipComponent, CanvasRenderer])
 
 const typesFor = mode => mode === 'cash' ? ['cash'] : mode === 'total' ? ['cash', 'savings'] : ['cash', 'savings', 'accrued']
 const escape = value => String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character])
@@ -108,27 +108,18 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
         }
       },
       series: [{
-        id: 'balance-line',
         type: 'line',
         data: points,
-        showSymbol: false,
-        animation: false,
-        silent: true,
-        lineStyle: { color: '#111', width: 1.5 },
-        areaStyle: { color: 'rgba(17,17,17,.045)' },
-        z: 1
-      }, {
-        id: `balance-points-${mode}`,
-        type: 'scatter',
-        data: points,
+        showSymbol: true,
         symbol: 'circle',
         symbolSize: 6,
+        lineStyle: { color: '#111', width: 1.5 },
         itemStyle: { color: '#111' },
-        emphasis: { scale: false, itemStyle: { color: '#111' } },
-        z: 2
+        areaStyle: { color: 'rgba(17,17,17,.045)' },
+        emphasis: { scale: false, itemStyle: { color: '#111' } }
       }]
-    }, { replaceMerge: ['series'] })
-  }, [mode, points, range])
+    }, true)
+  }, [points, range])
 
   return (
     <section className="chart-view">
