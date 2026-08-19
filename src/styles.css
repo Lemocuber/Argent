@@ -338,7 +338,6 @@ input, textarea {
 .type-switch button.active { color: var(--paper); background: var(--ink); }
 .type-switch .material-symbols-sharp { font-size: 30px; }
 .delete-options { height: 92px; padding: 1px; margin: 48px 16px 22px; background: var(--red); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
-.delete-options.single { width: 92px; }
 .delete-options-inner { display: grid; overflow: hidden; width: 100%; height: 100%; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--red); clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px)); }
 .delete-options.single .delete-options-inner { grid-template-columns: 1fr; }
 .delete-options-inner > button, .delete-options-inner > div { position: relative; display: grid; min-width: 0; place-items: center; background: var(--paper); }
