@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { balanceOn, displayDate, entryOn, formatMoney, parseDate, priorEntry, shiftDate, TYPE_ICONS } from '../lib.js'
+import { balanceOn, displayDate, entryOn, formatDelta, formatMoney, parseDate, priorEntry, shiftDate, TYPE_ICONS } from '../lib.js'
 import { Icon } from './Icon.jsx'
 
 export function ReportView({ channels, entries, date, onDate, onAdd, onEditChannel, onEntry }) {
@@ -103,7 +103,7 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
                       <span className="channel-value">
                         <strong>{formatMoney(balanceOn(entries, channel.id, day))}</strong>
                         <small className={delta > 0 ? 'positive' : delta < 0 ? 'negative' : ''}>
-                          {delta !== null ? <>{delta > 0 ? '+' : ''}{formatMoney(delta)}</> : !exact ? <i /> : null}
+                          {delta !== null ? formatDelta(delta) : !exact ? <i /> : null}
                         </small>
                       </span>
                     </button>

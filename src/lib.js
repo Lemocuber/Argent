@@ -35,6 +35,7 @@ export const formatMoney = cents => (cents / 100).toLocaleString('en-US', {
   minimumFractionDigits: Math.abs(cents) % 100 ? 2 : 0,
   maximumFractionDigits: 2
 })
+export const formatDelta = cents => cents === 0 ? '±0' : `${cents > 0 ? '+' : ''}${formatMoney(cents)}`
 export const parseMoney = value => {
   const normalized = value.replaceAll(',', '').trim()
   return /^-?(?:\d+|\d*\.\d{1,2})$/.test(normalized) && Number.isSafeInteger(Math.round(Number(normalized) * 100))

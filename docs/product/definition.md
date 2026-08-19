@@ -8,7 +8,7 @@ An account is identified by a 12-emoji sequence selected from a fixed 8-by-12 bo
 
 ## Money
 
-Amounts support negatives and at most two decimal places. Storage uses integer hundredths. Display uses three-digit commas and hides decimals when both decimal digits are zero.
+Amounts support negatives and at most two decimal places. Storage uses integer hundredths. Display uses three-digit commas and hides decimals when both decimal digits are zero. Signed changes display neutral values as `±0`.
 
 Channel types and chart scopes are:
 

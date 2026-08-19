@@ -3,7 +3,7 @@ import { LineChart } from 'echarts/charts'
 import { DataZoomInsideComponent, GridComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { displayDate, formatMoney, MODE_ICONS, shiftDate, today } from '../lib.js'
+import { displayDate, formatDelta, formatMoney, MODE_ICONS, shiftDate, today } from '../lib.js'
 import { Icon } from './Icon.jsx'
 import { TimelineRail } from './TimelineRail.jsx'
 
@@ -102,8 +102,8 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
         formatter: params => {
           const point = Array.isArray(params) ? params[0]?.data : params.data
           if (!point) return ''
-          const delta = point.delta === null ? '' : `<span class="node-delta ${point.delta > 0 ? 'up' : point.delta < 0 ? 'down' : ''}">${point.delta > 0 ? '+' : ''}${formatMoney(point.delta)}</span>`
-          const details = point.details.map(detail => `<div class="node-note"><b>${detail.name ? `<span class="${detail.closed ? 'closed' : ''}">${escape(detail.name)}</span>` : ''}<em class="${detail.delta > 0 ? 'up' : detail.delta < 0 ? 'down' : ''}">${detail.delta > 0 ? '+' : ''}${formatMoney(detail.delta)}</em></b>${detail.note ? `<i>${escape(detail.note)}</i>` : ''}</div>`).join('')
+          const delta = point.delta === null ? '' : `<span class="node-delta ${point.delta > 0 ? 'up' : point.delta < 0 ? 'down' : ''}">${formatDelta(point.delta)}</span>`
+          const details = point.details.map(detail => `<div class="node-note"><b>${detail.name ? `<span class="${detail.closed ? 'closed' : ''}">${escape(detail.name)}</span>` : ''}<em class="${detail.delta > 0 ? 'up' : detail.delta < 0 ? 'down' : ''}">${formatDelta(detail.delta)}</em></b>${detail.note ? `<i>${escape(detail.note)}</i>` : ''}</div>`).join('')
           return `<div class="node-detail"><time>${displayDate(point.value[0])}</time><div class="node-balance"><strong>${formatMoney(point.amount)}</strong>${delta}</div>${details}</div>`
         }
       },

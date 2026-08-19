@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { displayDate, entryOn, formatMoney, parseDate, parseMoney, priorEntry, TYPE_ICONS } from '../lib.js'
+import { displayDate, entryOn, formatDelta, formatMoney, parseDate, parseMoney, priorEntry, TYPE_ICONS } from '../lib.js'
 import { Icon } from './Icon.jsx'
 
 export function EntrySheet({ channel, date, entries, onClose, onSave, onDelete }) {
@@ -39,7 +39,7 @@ export function EntrySheet({ channel, date, entries, onClose, onSave, onDelete }
       <div className="amount-line">
         <input ref={amountInput} value={amount} inputMode="decimal" onChange={event => setAmount(event.target.value)} />
         <output className={delta > 0 ? 'positive' : delta < 0 ? 'negative' : ''}>
-          {delta === null ? <i /> : `${delta > 0 ? '+' : ''}${formatMoney(delta)}`}
+          {delta === null ? <i /> : formatDelta(delta)}
         </output>
       </div>
       <div className="note-line">
