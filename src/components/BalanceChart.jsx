@@ -3,7 +3,7 @@ import { LineChart } from 'echarts/charts'
 import { DataZoomInsideComponent, GridComponent, TooltipComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { displayDate, formatDelta, formatMoney, MODE_ICONS, shiftDate, today } from '../lib.js'
+import { displayDate, formatAxisMoney, formatDelta, formatMoney, MODE_ICONS, shiftDate, today } from '../lib.js'
 import { Icon } from './Icon.jsx'
 import { TimelineRail } from './TimelineRail.jsx'
 
@@ -68,10 +68,12 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
       useUTC: true,
       animationDuration: 520,
       animationEasing: 'cubicOut',
-      grid: { left: 10, right: 10, top: 22, bottom: 10, containLabel: true },
+      grid: { left: '12.5%', right: 10, top: 22, bottom: 10, containLabel: false, outerBoundsMode: 'none' },
       xAxis: {
         type: 'time',
         boundaryGap: false,
+        min: 'dataMin',
+        max: 'dataMax',
         minInterval: 24 * 60 * 60 * 1000,
         axisLine: { show: false },
         axisTick: { show: false },
@@ -84,7 +86,7 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
         axisLine: { show: false },
         axisTick: { show: false },
         splitLine: { lineStyle: { color: '#d6d4ce', width: 1 } },
-        axisLabel: { color: '#111', fontFamily: 'Azeret Mono Variable', fontSize: 10, formatter: value => formatMoney(Math.round(value)) }
+        axisLabel: { color: '#111', fontFamily: 'Azeret Mono Variable', fontSize: 10, formatter: formatAxisMoney }
       },
       dataZoom: [{ id: 'timeline', type: 'inside', filterMode: 'none', start: range.start, end: range.end, disabled: true, zoomOnMouseWheel: false, moveOnMouseMove: false, moveOnMouseWheel: false, preventDefaultMouseMove: false }],
       tooltip: {

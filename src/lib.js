@@ -35,6 +35,12 @@ export const formatMoney = cents => (cents / 100).toLocaleString('en-US', {
   minimumFractionDigits: Math.abs(cents) % 100 ? 2 : 0,
   maximumFractionDigits: 2
 })
+export const formatAxisMoney = cents => {
+  const amount = Math.abs(Math.round(cents)) / 100
+  const fit = (value, unit) => [2, 1, 0].map(precision => `${Number(value.toFixed(precision))}${unit}`).find(label => label.length <= 4)
+  const value = [[1, ''], [1e3, 'K'], [1e6, 'M'], [1e9, 'B'], [1e12, 'T']].map(([size, unit]) => fit(amount / size, unit)).find(Boolean) || '0'
+  return `${cents < 0 ? '-' : ''}${value}`
+}
 export const formatDelta = cents => cents === 0 ? '±0' : `${cents > 0 ? '+' : ''}${formatMoney(cents)}`
 export const parseMoney = value => {
   const normalized = value.replaceAll(',', '').trim()

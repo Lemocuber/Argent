@@ -8,7 +8,7 @@ An account is identified by a 12-emoji sequence selected from a fixed 8-by-12 bo
 
 ## Money
 
-Amounts support negatives and at most two decimal places. Storage uses integer hundredths. Display uses three-digit commas and hides decimals when both decimal digits are zero. Signed changes display neutral values as `±0`.
+Amounts support negatives and at most two decimal places. Storage uses integer hundredths. Display uses three-digit commas and hides decimals when both decimal digits are zero. Signed changes display neutral values as `±0`. Chart-axis amounts use the most precise rounded representation that fits four characters, excluding a leading minus sign, with uppercase `K`, `M`, `B`, and `T` suffixes as needed.
 
 Channel types and chart scopes are:
 
