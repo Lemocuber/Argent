@@ -236,6 +236,7 @@ input, textarea {
   background: var(--ink);
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
 }
+.empty-chart::before { clip-path: polygon(0 0, calc(100% - 13px) 0, 100% 13px, 100% 100%, 13px 100%, 0 calc(100% - 13px)); }
 .empty-chart .material-symbols-sharp { font-size: 33px; }
 .node-detail { display: grid; min-width: 210px; gap: 7px; }
 .node-detail time { padding-bottom: 8px; border-bottom: 1px solid var(--rule); font-size: 12px; }
