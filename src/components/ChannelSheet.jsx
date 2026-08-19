@@ -47,11 +47,13 @@ export function ChannelSheet({ channel, date, onClose, onSave, onDelete, onClose
         </div>
       </div>
       {deleting && <div className={`delete-options ${channel.closedAt ? 'single' : ''}`}>
-        <button className={deleteMode === 'all' ? 'armed' : ''} onClick={() => remove('all')}><Icon name={deleteMode === 'all' ? 'warning' : 'delete_forever'} /></button>
-        {!channel.closedAt && <div className={deleteMode === 'since' ? 'armed' : ''}>
-          <button onClick={() => remove('since')}><Icon name={deleteMode === 'since' ? 'warning' : 'event_busy'} /></button>
-          <input value={closeDate} inputMode="numeric" maxLength="10" onChange={event => { setCloseDate(event.target.value); setDeleteMode(null) }} />
-        </div>}
+        <div className="delete-options-inner">
+          <button className={deleteMode === 'all' ? 'armed' : ''} onClick={() => remove('all')}><Icon name={deleteMode === 'all' ? 'warning' : 'delete_forever'} /></button>
+          {!channel.closedAt && <div className={deleteMode === 'since' ? 'armed' : ''}>
+            <button onClick={() => remove('since')}><Icon name={deleteMode === 'since' ? 'warning' : 'event_busy'} /></button>
+            <input value={closeDate} inputMode="numeric" maxLength="10" onChange={event => { setCloseDate(event.target.value); setDeleteMode(null) }} />
+          </div>}
+        </div>
       </div>}
     </div>
   )

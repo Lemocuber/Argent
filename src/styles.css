@@ -337,15 +337,17 @@ input, textarea {
 .type-switch button { display: grid; place-items: center; background: var(--paper); }
 .type-switch button.active { color: var(--paper); background: var(--ink); }
 .type-switch .material-symbols-sharp { font-size: 30px; }
-.delete-options { display: grid; height: 92px; margin: 22px 16px; grid-template-columns: 92px 1fr; gap: 1px; background: var(--ink); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
-.delete-options.single { width: 92px; grid-template-columns: 1fr; }
-.delete-options > button, .delete-options > div { position: relative; display: grid; min-width: 0; place-items: center; background: var(--paper); }
-.delete-options > div { grid-template-columns: 58px 1fr; }
-.delete-options > div > button { display: grid; width: 100%; height: 100%; place-items: center; }
+.delete-options { height: 92px; padding: 1px; margin: 48px 16px 22px; background: var(--red); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+.delete-options.single { width: 92px; }
+.delete-options-inner { display: grid; overflow: hidden; width: 100%; height: 100%; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--red); clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px)); }
+.delete-options.single .delete-options-inner { grid-template-columns: 1fr; }
+.delete-options-inner > button, .delete-options-inner > div { position: relative; display: grid; min-width: 0; place-items: center; background: var(--paper); }
+.delete-options-inner > div { grid-template-columns: 58px 1fr; }
+.delete-options-inner > div > button { display: grid; width: 100%; height: 100%; place-items: center; }
 .delete-options input { width: 100%; height: 100%; padding-right: 16px; font-size: 14px; text-align: right; }
 .delete-options .armed { color: var(--paper); background: var(--red); }
 .delete-options .armed .material-symbols-sharp { filter: invert(1); }
-.delete-options > div.armed input { color: var(--paper); }
+.delete-options-inner > div.armed input { color: var(--paper); }
 
 .entry-channel { display: flex; min-height: 88px; padding: 16px 20px; align-items: center; gap: 16px; border-bottom: 1px solid var(--ink); }
 .entry-channel .material-symbols-sharp { width: 29px; height: 29px; }
