@@ -11,6 +11,10 @@ echarts.use([LineChart, DataZoomInsideComponent, GridComponent, TooltipComponent
 
 const typesFor = mode => mode === 'cash' ? ['cash'] : mode === 'total' ? ['cash', 'savings'] : ['cash', 'savings', 'accrued']
 const escape = value => String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character])
+const latestRange = points => {
+  const span = points.length > 1 ? Date.parse(points.at(-1).value[0]) - Date.parse(points[0].value[0]) : 0
+  return { start: span ? Math.max(0, 100 - 30 * 86400000 / span * 100) : 0, end: 100 }
+}
 
 const pointsFor = (channels, entries, mode) => {
   const included = channels.filter(channel => !channel.archived && typesFor(mode).includes(channel.type))
@@ -46,11 +50,11 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
   const element = useRef(null)
   const chart = useRef(null)
   const points = useMemo(() => pointsFor(channels, entries, mode), [channels, entries, mode])
-  const [range, setRange] = useState({ start: 0, end: 100 })
+  const [range, setRange] = useState(() => latestRange(points))
   const current = points.at(-1)?.amount || 0
   const domain = `${points[0]?.value[0] || ''}:${points.at(-1)?.value[0] || ''}`
 
-  useEffect(() => setRange({ start: 0, end: 100 }), [domain])
+  useEffect(() => setRange(latestRange(points)), [domain])
 
   useEffect(() => {
     chart.current = echarts.init(element.current, null, { renderer: 'canvas' })
