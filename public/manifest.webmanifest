@@ -1,0 +1,11 @@
+{
+  "name": "Argent",
+  "short_name": "Argent",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f2eb",
+  "theme_color": "#f4f2eb",
+  "icons": [
+    { "src": "/argent.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

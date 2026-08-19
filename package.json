@@ -1,0 +1,27 @@
+{
+  "name": "argent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c black,gray \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "node --watch server/index.js",
+    "dev:web": "vite",
+    "build": "vite build",
+    "start": "NODE_ENV=production node server/index.js"
+  },
+  "dependencies": {
+    "@fontsource-variable/azeret-mono": "^5.3.0",
+    "@material-symbols/svg-300": "^0.46.0",
+    "better-sqlite3": "^13.0.3",
+    "echarts": "^6.1.0",
+    "express": "^5.2.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "concurrently": "^10.0.5",
+    "vite": "^8.2.1"
+  }
+}
