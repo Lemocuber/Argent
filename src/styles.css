@@ -221,20 +221,7 @@ input, textarea {
   white-space: nowrap;
 }
 .chart-stage { display: grid; height: calc(100% - 170px); grid-template-rows: minmax(0, 1fr) 64px; }
-.plot-stage {
-  position: relative;
-  min-height: 0;
-  --grid-line: rgba(17,17,17,.035);
-  background:
-    linear-gradient(var(--grid-line), var(--grid-line)) 12.5% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 25% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 37.5% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 50% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 62.5% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 75% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 87.5% 0 / 1px 100% no-repeat,
-    linear-gradient(var(--grid-line), var(--grid-line)) 100% 0 / 1px 100% no-repeat;
-}
+.plot-stage { position: relative; min-height: 0; background-image: linear-gradient(90deg, transparent calc(100% - 1px), rgba(17,17,17,.035) 1px); background-size: 12.5% 100%; }
 .chart { width: 100%; height: 100%; touch-action: manipulation; }
 .empty-chart {
   position: absolute;
