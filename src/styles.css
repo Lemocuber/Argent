@@ -247,6 +247,7 @@ input, textarea {
 .node-note { display: grid; padding-top: 9px; border-top: 1px solid var(--rule); gap: 5px; white-space: normal; }
 .node-note b { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 560; line-height: 1.2; }
 .node-note b span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.node-note b span.closed { text-decoration: line-through; text-decoration-thickness: 1px; }
 .node-note b em { flex: none; font-size: 10px; font-style: normal; font-weight: 430; line-height: 1; }
 .node-note i { max-width: 290px; font-size: 12px; font-style: normal; line-height: 1.45; }
 .timeline-rail {
@@ -327,11 +328,7 @@ input, textarea {
 .sheet-bar > :first-child { margin-right: auto; }
 .sheet-bar .danger { margin-right: 4px; color: var(--red); }
 .sheet-bar .danger .material-symbols-sharp { filter: invert(22%) sepia(96%) saturate(3214%) hue-rotate(353deg) brightness(91%); }
-.sheet-bar .danger.delete-step-1 { position: relative; isolation: isolate; border: 0; background: var(--red); clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
-.sheet-bar .danger.delete-step-1::before { position: absolute; z-index: 0; inset: 1px; background: var(--paper); clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px)); content: ''; }
-.sheet-bar .danger.delete-step-1 > * { position: relative; z-index: 1; }
-.sheet-bar .danger.delete-step-2 { background: var(--red); clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
-.sheet-bar .danger.delete-step-2 .material-symbols-sharp { filter: invert(1); }
+.sheet-bar .danger.active { background: var(--soft); clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); }
 .channel-name { display: grid; min-height: 104px; padding: 18px; align-items: center; grid-template-columns: 60px 1fr; border-bottom: 1px solid var(--ink); }
 .channel-name .material-symbols-sharp { width: 31px; height: 31px; }
 .channel-name input { width: 100%; border-bottom: 1px solid var(--ink); font-size: 18px; line-height: 42px; }
@@ -340,6 +337,15 @@ input, textarea {
 .type-switch button { display: grid; place-items: center; background: var(--paper); }
 .type-switch button.active { color: var(--paper); background: var(--ink); }
 .type-switch .material-symbols-sharp { font-size: 30px; }
+.delete-options { display: grid; height: 92px; margin: 22px 16px; grid-template-columns: 92px 1fr; gap: 1px; background: var(--ink); clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+.delete-options.single { width: 92px; grid-template-columns: 1fr; }
+.delete-options > button, .delete-options > div { position: relative; display: grid; min-width: 0; place-items: center; background: var(--paper); }
+.delete-options > div { grid-template-columns: 58px 1fr; }
+.delete-options > div > button { display: grid; width: 100%; height: 100%; place-items: center; }
+.delete-options input { width: 100%; height: 100%; padding-right: 16px; font-size: 14px; text-align: right; }
+.delete-options .armed { color: var(--paper); background: var(--red); }
+.delete-options .armed .material-symbols-sharp { filter: invert(1); }
+.delete-options > div.armed input { color: var(--paper); }
 
 .entry-channel { display: flex; min-height: 88px; padding: 16px 20px; align-items: center; gap: 16px; border-bottom: 1px solid var(--ink); }
 .entry-channel .material-symbols-sharp { width: 29px; height: 29px; }

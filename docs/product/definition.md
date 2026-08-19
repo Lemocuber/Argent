@@ -22,7 +22,7 @@ Accrued values may be positive receivables or negative liabilities. Negative val
 
 An entry is a dated balance snapshot for one channel. Dates are displayed as `YYYY/MM/DD`. Missing entries carry the most recent balance forward without creating synthetic records. Users may create, edit, or remove historical snapshots. Change is calculated against the prior explicit snapshot.
 
-Channels are identified in money views by their type icon and user-entered name. Tapping that identity region edits the channel; tapping the remaining row opens balance entry. Deleting a channel permanently removes its snapshots after an icon-only two-stage confirmation.
+Channels are identified in money views by their type icon and user-entered name. Tapping that identity region edits the channel; tapping the remaining row opens balance entry. An icon-only two-stage confirmation can either archive the entire channel without removing its stored snapshots, or close it on a selected date. Closing records a zero balance on that date, hides the channel from then onward, preserves its earlier chart history, and crosses out its name in that date's chart detail. Neither action exposes a restoration control in the interface.
 
 ## Interface
 

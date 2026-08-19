@@ -1,24 +1,37 @@
 import { useEffect, useState } from 'react'
-import { TYPE_ICONS } from '../lib.js'
+import { displayDate, parseDate, TYPE_ICONS } from '../lib.js'
 import { Icon } from './Icon.jsx'
 
-export function ChannelSheet({ channel, onClose, onSave, onDelete }) {
+export function ChannelSheet({ channel, date, onClose, onSave, onDelete, onCloseAt }) {
   const [name, setName] = useState('')
   const [type, setType] = useState('cash')
-  const [deleteStep, setDeleteStep] = useState(0)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteMode, setDeleteMode] = useState(null)
+  const [closeDate, setCloseDate] = useState(displayDate(date))
 
   useEffect(() => {
     setName(channel?.name || '')
     setType(channel?.type || 'cash')
-    setDeleteStep(0)
-  }, [channel])
+    setDeleting(false)
+    setDeleteMode(null)
+    setCloseDate(displayDate(date))
+  }, [channel, date])
+
+  const remove = mode => {
+    if (deleteMode !== mode) return setDeleteMode(mode)
+    if (mode === 'all') onDelete()
+    else {
+      const value = parseDate(closeDate)
+      if (value) onCloseAt(value)
+    }
+  }
 
   return (
     <div className="sheet channel-sheet">
       <header className="sheet-bar">
         <button className="icon-button" onClick={onClose}><Icon name="close" /></button>
-        {channel && <button className={`icon-button danger delete-step-${deleteStep}`} onClick={() => deleteStep < 2 ? setDeleteStep(deleteStep + 1) : onDelete()}>
-          <Icon name={deleteStep === 0 ? 'delete' : deleteStep === 1 ? 'warning' : 'delete_forever'} />
+        {channel && <button className={`icon-button danger ${deleting ? 'active' : ''}`} onClick={() => { setDeleting(!deleting); setDeleteMode(null) }}>
+          <Icon name={deleting ? 'close' : 'delete'} />
         </button>}
         <button className="icon-button primary" onClick={() => onSave({ name, type })}><Icon name="check" /></button>
       </header>
@@ -33,6 +46,13 @@ export function ChannelSheet({ channel, onClose, onSave, onDelete }) {
           ))}
         </div>
       </div>
+      {deleting && <div className={`delete-options ${channel.closedAt ? 'single' : ''}`}>
+        <button className={deleteMode === 'all' ? 'armed' : ''} onClick={() => remove('all')}><Icon name={deleteMode === 'all' ? 'warning' : 'delete_forever'} /></button>
+        {!channel.closedAt && <div className={deleteMode === 'since' ? 'armed' : ''}>
+          <button onClick={() => remove('since')}><Icon name={deleteMode === 'since' ? 'warning' : 'event_busy'} /></button>
+          <input value={closeDate} inputMode="numeric" maxLength="10" onChange={event => { setCloseDate(event.target.value); setDeleteMode(null) }} />
+        </div>}
+      </div>}
     </div>
   )
 }

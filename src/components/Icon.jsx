@@ -13,6 +13,7 @@ import close from '@material-symbols/svg-300/sharp/close.svg'
 import deleteIcon from '@material-symbols/svg-300/sharp/delete.svg'
 import deleteForever from '@material-symbols/svg-300/sharp/delete_forever.svg'
 import editNote from '@material-symbols/svg-300/sharp/edit_note.svg'
+import eventBusy from '@material-symbols/svg-300/sharp/event_busy.svg'
 import editNoteFill from '@material-symbols/svg-300/sharp/edit_note-fill.svg'
 import monitoring from '@material-symbols/svg-300/sharp/monitoring.svg'
 import monitoringFill from '@material-symbols/svg-300/sharp/monitoring-fill.svg'
@@ -40,6 +41,7 @@ const icons = {
   delete: deleteIcon,
   delete_forever: deleteForever,
   edit_note: editNote,
+  event_busy: eventBusy,
   monitoring,
   notes,
   payments,

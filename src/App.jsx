@@ -72,10 +72,11 @@ export default function App() {
         </nav>
 
         {channelSheet !== undefined && (
-          <ChannelSheet channel={channelSheet} onClose={() => setChannelSheet(undefined)} onSave={value => mutate(() => channelSheet
+          <ChannelSheet channel={channelSheet} date={date} onClose={() => setChannelSheet(undefined)} onSave={value => mutate(() => channelSheet
             ? api.updateChannel(account, channelSheet.id, value)
             : api.createChannel(account, value)).then(() => setChannelSheet(undefined))}
-            onDelete={() => mutate(() => api.deleteChannel(account, channelSheet.id)).then(() => setChannelSheet(undefined))} />
+            onDelete={() => mutate(() => api.deleteChannel(account, channelSheet.id)).then(() => setChannelSheet(undefined))}
+            onCloseAt={value => mutate(() => api.closeChannel(account, channelSheet.id, value)).then(() => setChannelSheet(undefined))} />
         )}
         {entryChannel && (
           <EntrySheet channel={entryChannel} date={date} entries={state.entries} onClose={() => setEntryChannel(null)}

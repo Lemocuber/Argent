@@ -14,8 +14,8 @@ const escape = value => String(value).replace(/[&<>'"]/g, character => ({ '&': '
 
 const pointsFor = (channels, entries, mode) => {
   const included = channels.filter(channel => !channel.archived && typesFor(mode).includes(channel.type))
-  const ids = new Set(included.map(channel => channel.id))
-  const relevant = entries.filter(entry => ids.has(entry.channelId)).sort((a, b) => a.date.localeCompare(b.date))
+  const cutoffs = new Map(included.map(channel => [channel.id, channel.closedAt]))
+  const relevant = entries.filter(entry => cutoffs.has(entry.channelId) && (!cutoffs.get(entry.channelId) || entry.date <= cutoffs.get(entry.channelId))).sort((a, b) => a.date.localeCompare(b.date))
   if (!relevant.length) return []
   const daily = relevant.reduce((map, entry) => map.set(entry.date, [...(map.get(entry.date) || []), entry]), new Map())
   const balances = new Map(included.map(channel => [channel.id, 0]))
@@ -27,8 +27,9 @@ const pointsFor = (channels, entries, mode) => {
     const details = changes.map(entry => ({
       name: names.get(entry.channelId),
       note: entry.note,
-      delta: entry.amountCents - balances.get(entry.channelId)
-    })).filter(detail => detail.delta || detail.note)
+      delta: entry.amountCents - balances.get(entry.channelId),
+      closed: cutoffs.get(entry.channelId) === date
+    })).filter(detail => detail.delta || detail.note || detail.closed)
     changes.forEach(entry => balances.set(entry.channelId, entry.amountCents))
     const amount = [...balances.values()].reduce((sum, value) => sum + value, 0)
     points.push({
@@ -102,7 +103,7 @@ export function BalanceChart({ channels, entries, mode, onMode, onEmpty }) {
           const point = Array.isArray(params) ? params[0]?.data : params.data
           if (!point) return ''
           const delta = point.delta === null ? '' : `<span class="node-delta ${point.delta > 0 ? 'up' : point.delta < 0 ? 'down' : ''}">${point.delta > 0 ? '+' : ''}${formatMoney(point.delta)}</span>`
-          const details = point.details.map(detail => `<div class="node-note"><b>${detail.name ? `<span>${escape(detail.name)}</span>` : ''}<em class="${detail.delta > 0 ? 'up' : detail.delta < 0 ? 'down' : ''}">${detail.delta > 0 ? '+' : ''}${formatMoney(detail.delta)}</em></b>${detail.note ? `<i>${escape(detail.note)}</i>` : ''}</div>`).join('')
+          const details = point.details.map(detail => `<div class="node-note"><b>${detail.name ? `<span class="${detail.closed ? 'closed' : ''}">${escape(detail.name)}</span>` : ''}<em class="${detail.delta > 0 ? 'up' : detail.delta < 0 ? 'down' : ''}">${detail.delta > 0 ? '+' : ''}${formatMoney(detail.delta)}</em></b>${detail.note ? `<i>${escape(detail.note)}</i>` : ''}</div>`).join('')
           return `<div class="node-detail"><time>${displayDate(point.value[0])}</time><div class="node-balance"><strong>${formatMoney(point.amount)}</strong>${delta}</div>${details}</div>`
         }
       },

@@ -66,8 +66,6 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
     track.current.style.transform = 'translate3d(-100%,0,0)'
   }
   const days = [shiftDate(date, -1), date, shiftDate(date, 1)]
-  const active = channels.filter(channel => !channel.archived)
-
   return (
     <section className="report-view">
       <header className="report-date">
@@ -95,7 +93,7 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
         {days.map(day => (
           <div className="report-day" key={day}>
             <div className="channel-list">
-              {active.map(channel => {
+              {channels.filter(channel => !channel.archived && (!channel.closedAt || day < channel.closedAt)).map(channel => {
                 const exact = entryOn(entries, channel.id, day)
                 const prior = priorEntry(entries, channel.id, day)
                 const delta = exact && prior ? exact.amountCents - prior.amountCents : null

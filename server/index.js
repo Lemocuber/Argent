@@ -28,6 +28,7 @@ db.exec(`
     type TEXT NOT NULL CHECK(type IN ('cash', 'savings', 'accrued')),
     position INTEGER NOT NULL DEFAULT 0,
     archived INTEGER NOT NULL DEFAULT 0,
+    closed_at TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -45,6 +46,8 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS channels_account ON channels(account_id, archived, position);
   CREATE INDEX IF NOT EXISTS entries_channel_date ON entries(channel_id, entry_date);
 `)
+
+if (!db.prepare("PRAGMA table_info(channels)").all().some(column => column.name === 'closed_at')) db.exec('ALTER TABLE channels ADD COLUMN closed_at TEXT')
 
 app.use(express.json({ limit: '32kb' }))
 
@@ -64,7 +67,7 @@ app.get('/api/accounts/:accountId/state', (req, res) => {
   if (!accountExists(accountId)) return res.sendStatus(404)
   res.json({
     channels: db.prepare(`
-      SELECT id, name, type, position, archived
+      SELECT id, name, type, position, archived, closed_at AS closedAt
       FROM channels WHERE account_id = ? ORDER BY archived, position, id
     `).all(accountId),
     entries: db.prepare(`
@@ -82,7 +85,7 @@ app.post('/api/accounts/:accountId/channels', (req, res) => {
   if (!accountExists(accountId) || !['cash', 'savings', 'accrued'].includes(type)) return res.sendStatus(400)
   const position = db.prepare('SELECT COALESCE(MAX(position), -1) + 1 AS value FROM channels WHERE account_id = ?').get(accountId).value
   const result = db.prepare('INSERT INTO channels (account_id, name, type, position) VALUES (?, ?, ?, ?)').run(accountId, String(name).slice(0, 48), type, position)
-  res.status(201).json(db.prepare('SELECT id, name, type, position, archived FROM channels WHERE id = ?').get(result.lastInsertRowid))
+  res.status(201).json(db.prepare('SELECT id, name, type, position, archived, closed_at AS closedAt FROM channels WHERE id = ?').get(result.lastInsertRowid))
 })
 
 app.patch('/api/accounts/:accountId/channels/:channelId', (req, res) => {
@@ -99,14 +102,29 @@ app.patch('/api/accounts/:accountId/channels/:channelId', (req, res) => {
 })
 
 app.delete('/api/accounts/:accountId/channels/:channelId', (req, res) => {
-  const result = db.prepare('DELETE FROM channels WHERE id = ? AND account_id = ?').run(req.params.channelId, req.params.accountId)
+  const result = db.prepare('UPDATE channels SET archived = 1 WHERE id = ? AND account_id = ? AND archived = 0').run(req.params.channelId, req.params.accountId)
   res.sendStatus(result.changes ? 204 : 404)
+})
+
+app.put('/api/accounts/:accountId/channels/:channelId/close', (req, res) => {
+  const channel = channelFor(req.params.channelId, req.params.accountId)
+  if (!channel || channel.archived || channel.closed_at || !validDate(req.body.date)) return res.sendStatus(400)
+  db.prepare(`
+    INSERT INTO entries (channel_id, entry_date, amount_cents)
+    VALUES (?, ?, 0)
+    ON CONFLICT(channel_id, entry_date) DO UPDATE SET
+      amount_cents = 0,
+      updated_at = CURRENT_TIMESTAMP
+  `).run(req.params.channelId, req.body.date)
+  db.prepare('UPDATE channels SET closed_at = ? WHERE id = ?').run(req.body.date, req.params.channelId)
+  res.sendStatus(204)
 })
 
 app.put('/api/accounts/:accountId/entries', (req, res) => {
   const { accountId } = req.params
   const { channelId, date, amountCents, note = '' } = req.body
-  if (!channelFor(channelId, accountId) || !validDate(date) || !Number.isSafeInteger(amountCents)) return res.sendStatus(400)
+  const channel = channelFor(channelId, accountId)
+  if (!channel || channel.archived || channel.closed_at && date >= channel.closed_at || !validDate(date) || !Number.isSafeInteger(amountCents)) return res.sendStatus(400)
   db.prepare(`
     INSERT INTO entries (channel_id, entry_date, amount_cents, note)
     VALUES (?, ?, ?, ?)
