@@ -68,7 +68,7 @@ export default function App() {
 
         <nav className="app-nav">
           <button className={view === 'chart' ? 'active' : ''} onClick={() => navigate('chart')}><Icon name="monitoring" filled={view === 'chart'} /></button>
-          <button className={view === 'report' ? 'active' : ''} onClick={() => navigate('report')}><Icon name="edit_note" filled={view === 'report'} /></button>
+          <button className={view === 'report' ? 'active' : ''} onClick={() => navigate('report')}><Icon name="edit_note" /></button>
         </nav>
 
         {channelSheet !== undefined && (

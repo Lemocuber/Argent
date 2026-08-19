@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { balanceOn, displayDate, entryOn, formatDelta, formatMoney, parseDate, priorEntry, shiftDate, TYPE_ICONS } from '../lib.js'
+import { balanceOn, displayDate, entryOn, formatDelta, formatMoney, parseDate, priorEntry, shiftDate, today, TYPE_ICONS } from '../lib.js'
 import { Icon } from './Icon.jsx'
 
 export function ReportView({ channels, entries, date, onDate, onAdd, onEditChannel, onEntry }) {
@@ -11,10 +11,12 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
   const animating = useRef(false)
   const transitionTimer = useRef(null)
   const blockClickUntil = useRef(0)
+  const lastDate = today()
+  const canNext = date < lastDate
   useEffect(() => setDraftDate(displayDate(date)), [date])
   const commitDate = () => {
     const next = parseDate(draftDate)
-    if (next) onDate(next)
+    if (next && next <= lastDate) onDate(next)
     else setDraftDate(displayDate(date))
   }
   const settleSwipe = direction => {
@@ -33,9 +35,9 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
     if (!start.axis && Math.max(Math.abs(dx), Math.abs(dy)) > 8) start.axis = Math.abs(dx) > Math.abs(dy) * 1.1 ? 'x' : 'y'
     if (start.axis !== 'x') return
     event.preventDefault()
-    start.dx = dx
+    start.dx = canNext || dx >= 0 ? dx : 0
     const width = event.currentTarget.clientWidth
-    track.current.style.transform = `translate3d(calc(-100% + ${Math.max(-width, Math.min(width, dx))}px),0,0)`
+    track.current.style.transform = `translate3d(calc(-100% + ${Math.max(-width, Math.min(width, start.dx))}px),0,0)`
   }
   const finishSwipe = event => {
     const start = swipe.current
@@ -71,7 +73,7 @@ export function ReportView({ channels, entries, date, onDate, onAdd, onEditChann
       <header className="report-date">
         <button onClick={() => onDate(shiftDate(date, -1))}><Icon name="chevron_left" /></button>
         <input value={draftDate} inputMode="numeric" maxLength="10" onChange={event => setDraftDate(event.target.value)} onBlur={commitDate} onKeyDown={event => event.key === 'Enter' && event.currentTarget.blur()} />
-        <button onClick={() => onDate(shiftDate(date, 1))}><Icon name="chevron_right" /></button>
+        <button disabled={!canNext} onClick={() => onDate(shiftDate(date, 1))}><Icon name="chevron_right" /></button>
       </header>
       <div className="report-body"
         onPointerDown={event => {
