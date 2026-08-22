@@ -36,4 +36,6 @@ The browser page disables global zoom, selection, context menus, and tap highlig
 
 React and Vite provide the frontend. Express provides the API. SQLite is the single-file store in WAL mode. Accounts, channels, and entries form the core data model. Production makes at most one dated SQLite backup per day.
 
+Account entry returns the initial state in one request. Mutation sheets dismiss immediately; successful responses update only the affected frontend state instead of triggering a second full-account request. A failed background mutation falls back to the icon-only reload screen.
+
 Argent provides no backward- or forward-compatibility guarantees. Data schemas, APIs, and stored state may be replaced outright instead of migrated or adapted.

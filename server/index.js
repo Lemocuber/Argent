@@ -55,28 +55,29 @@ const validAccount = id => /^[0-2][0-9a-z](?:[0-2][0-9a-z]){11}$/.test(id)
 const validDate = date => /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(`${date}T00:00:00Z`))
 const accountExists = id => db.prepare('SELECT 1 FROM accounts WHERE id = ?').get(id)
 const channelFor = (id, accountId) => db.prepare('SELECT * FROM channels WHERE id = ? AND account_id = ?').get(id, accountId)
+const stateFor = accountId => ({
+  channels: db.prepare(`
+    SELECT id, name, type, position, archived, closed_at AS closedAt
+    FROM channels WHERE account_id = ? ORDER BY archived, position, id
+  `).all(accountId),
+  entries: db.prepare(`
+    SELECT e.id, e.channel_id AS channelId, e.entry_date AS date,
+           e.amount_cents AS amountCents, e.note
+    FROM entries e JOIN channels c ON c.id = e.channel_id
+    WHERE c.account_id = ? ORDER BY e.entry_date, e.id
+  `).all(accountId)
+})
 
 app.put('/api/accounts/:accountId', (req, res) => {
   if (!validAccount(req.params.accountId)) return res.sendStatus(400)
   db.prepare('INSERT OR IGNORE INTO accounts (id) VALUES (?)').run(req.params.accountId)
-  res.sendStatus(204)
+  res.json(stateFor(req.params.accountId))
 })
 
 app.get('/api/accounts/:accountId/state', (req, res) => {
   const { accountId } = req.params
   if (!accountExists(accountId)) return res.sendStatus(404)
-  res.json({
-    channels: db.prepare(`
-      SELECT id, name, type, position, archived, closed_at AS closedAt
-      FROM channels WHERE account_id = ? ORDER BY archived, position, id
-    `).all(accountId),
-    entries: db.prepare(`
-      SELECT e.id, e.channel_id AS channelId, e.entry_date AS date,
-             e.amount_cents AS amountCents, e.note
-      FROM entries e JOIN channels c ON c.id = e.channel_id
-      WHERE c.account_id = ? ORDER BY e.entry_date, e.id
-    `).all(accountId)
-  })
+  res.json(stateFor(accountId))
 })
 
 app.post('/api/accounts/:accountId/channels', (req, res) => {
@@ -117,7 +118,13 @@ app.put('/api/accounts/:accountId/channels/:channelId/close', (req, res) => {
       updated_at = CURRENT_TIMESTAMP
   `).run(req.params.channelId, req.body.date)
   db.prepare('UPDATE channels SET closed_at = ? WHERE id = ?').run(req.body.date, req.params.channelId)
-  res.sendStatus(204)
+  res.json({
+    channel: db.prepare('SELECT id, name, type, position, archived, closed_at AS closedAt FROM channels WHERE id = ?').get(req.params.channelId),
+    entry: db.prepare(`
+      SELECT id, channel_id AS channelId, entry_date AS date, amount_cents AS amountCents, note
+      FROM entries WHERE channel_id = ? AND entry_date = ?
+    `).get(req.params.channelId, req.body.date)
+  })
 })
 
 app.put('/api/accounts/:accountId/entries', (req, res) => {

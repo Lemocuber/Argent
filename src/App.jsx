@@ -11,6 +11,8 @@ import { today } from './lib.js'
 
 const BalanceChart = lazy(() => import('./components/BalanceChart.jsx').then(module => ({ default: module.BalanceChart })))
 const Frame = ({ children }) => <div className="device-frame"><div className="device-content">{children}</div></div>
+const withChannel = (state, channel) => ({ ...state, channels: state.channels.map(item => item.id === channel.id ? { ...item, ...channel } : item) })
+const withEntry = (state, entry) => ({ ...state, entries: [...state.entries.filter(item => item.channelId !== entry.channelId || item.date !== entry.date), entry] })
 
 const storedAccount = localStorage.getItem('argent.account')
 
@@ -26,12 +28,11 @@ export default function App() {
   const [failed, setFailed] = useState(false)
   const navTaps = useRef({ view: null, started: 0, count: 0 })
 
-  const load = async id => setState(await api.state(id))
   const enter = async id => {
-    await api.enter(id)
+    const next = await api.enter(id)
     localStorage.setItem('argent.account', id)
     setAccount(id)
-    await load(id)
+    setState(next)
     setReady(true)
   }
 
@@ -40,9 +41,12 @@ export default function App() {
     enter(account).catch(() => { setFailed(true); setReady(true) })
   }, [])
 
-  const mutate = async action => {
-    await action()
-    await load(account)
+  const mutate = (action, apply) => {
+    action().then(value => setState(current => apply(current, value))).catch(() => setFailed(true))
+  }
+  const commit = (close, action, apply) => {
+    close()
+    mutate(action, apply)
   }
   const navigate = next => {
     const now = performance.now()
@@ -76,16 +80,34 @@ export default function App() {
         </nav>
 
         {channelSheet !== undefined && (
-          <ChannelSheet channel={channelSheet} date={date} onClose={() => setChannelSheet(undefined)} onSave={value => mutate(() => channelSheet
-            ? api.updateChannel(account, channelSheet.id, value)
-            : api.createChannel(account, value)).then(() => setChannelSheet(undefined))}
-            onDelete={() => mutate(() => api.deleteChannel(account, channelSheet.id)).then(() => setChannelSheet(undefined))}
-            onCloseAt={value => mutate(() => api.closeChannel(account, channelSheet.id, value)).then(() => setChannelSheet(undefined))} />
+          <ChannelSheet channel={channelSheet} date={date} onClose={() => setChannelSheet(undefined)} onSave={value => commit(
+            () => setChannelSheet(undefined),
+            () => channelSheet ? api.updateChannel(account, channelSheet.id, value) : api.createChannel(account, value),
+            (current, channel) => channelSheet ? withChannel(current, channel) : { ...current, channels: [...current.channels, channel] }
+          )}
+            onDelete={() => commit(
+              () => setChannelSheet(undefined),
+              () => api.deleteChannel(account, channelSheet.id),
+              current => withChannel(current, { id: channelSheet.id, archived: 1 })
+            )}
+            onCloseAt={value => commit(
+              () => setChannelSheet(undefined),
+              () => api.closeChannel(account, channelSheet.id, value),
+              (current, result) => withEntry(withChannel(current, result.channel), result.entry)
+            )} />
         )}
         {entryChannel && (
           <EntrySheet channel={entryChannel} date={date} entries={state.entries} onClose={() => setEntryChannel(null)}
-            onSave={value => mutate(() => api.saveEntry(account, value)).then(() => setEntryChannel(null))}
-            onDelete={entryId => mutate(() => api.deleteEntry(account, entryId)).then(() => setEntryChannel(null))} />
+            onSave={value => commit(
+              () => setEntryChannel(null),
+              () => api.saveEntry(account, value),
+              withEntry
+            )}
+            onDelete={entryId => commit(
+              () => setEntryChannel(null),
+              () => api.deleteEntry(account, entryId),
+              current => ({ ...current, entries: current.entries.filter(entry => entry.id !== entryId) })
+            )} />
         )}
       </main>
     </Frame>

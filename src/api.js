@@ -9,7 +9,6 @@ const request = async (url, options) => {
 
 export const api = {
   enter: id => request(`/api/accounts/${id}`, { method: 'PUT' }),
-  state: id => request(`/api/accounts/${id}/state`),
   createChannel: (id, channel) => request(`/api/accounts/${id}/channels`, { method: 'POST', body: JSON.stringify(channel) }),
   updateChannel: (id, channelId, channel) => request(`/api/accounts/${id}/channels/${channelId}`, { method: 'PATCH', body: JSON.stringify(channel) }),
   deleteChannel: (id, channelId) => request(`/api/accounts/${id}/channels/${channelId}`, { method: 'DELETE' }),
