@@ -5,6 +5,7 @@ import { EmojiGate } from './components/EmojiGate.jsx'
 import { EntrySheet } from './components/EntrySheet.jsx'
 import { Icon } from './components/Icon.jsx'
 import { ReportView } from './components/ReportView.jsx'
+import { clearChannelOrder } from './channelOrder.js'
 import { today } from './lib.js'
 
 const BalanceChart = lazy(() => import('./components/BalanceChart.jsx').then(module => ({ default: module.BalanceChart })))
@@ -49,6 +50,7 @@ export default function App() {
     else taps.count += 1
     if (taps.count >= 10) {
       localStorage.removeItem('argent.account')
+      clearChannelOrder()
       location.reload()
       return
     }
@@ -64,7 +66,7 @@ export default function App() {
       <main className="app-shell">
         {view === 'chart'
           ? <Suspense fallback={<div className="chart-pending"><i /></div>}><BalanceChart {...state} mode={mode} onMode={setMode} onEmpty={() => setView('report')} /></Suspense>
-          : <ReportView {...state} date={date} onDate={setDate} onAdd={() => setChannelSheet(null)} onEditChannel={setChannelSheet} onEntry={setEntryChannel} />}
+          : <ReportView {...state} account={account} date={date} onDate={setDate} onAdd={() => setChannelSheet(null)} onEditChannel={setChannelSheet} onEntry={setEntryChannel} />}
 
         <nav className="app-nav">
           <button className={view === 'chart' ? 'active' : ''} onClick={() => navigate('chart')}><Icon name="monitoring" filled={view === 'chart'} /></button>

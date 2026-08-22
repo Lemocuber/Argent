@@ -281,7 +281,7 @@ input, textarea {
 }
 .report-date button { display: grid; place-items: center; }
 .report-date input { width: 100%; text-align: center; font-size: 14px; }
-.channel-list { padding-bottom: 20px; }
+.channel-list { position: relative; padding-bottom: 20px; }
 .channel-row { position: relative; min-height: 88px; border-bottom: 1px solid var(--rule); }
 .channel-entry { position: absolute; z-index: 0; inset: 0; display: flex; justify-content: flex-end; text-align: right; }
 .channel-id {
@@ -307,6 +307,15 @@ input, textarea {
 .positive { color: var(--green); }
 .negative { color: var(--red); }
 .add-channel-row { display: grid; width: 100%; min-height: 88px; place-items: center; border-bottom: 1px solid var(--rule); }
+.report-body.sorting, .report-body.sorting .report-day { touch-action: none; }
+.sort-row { display: grid; width: 100%; align-items: center; grid-template-columns: minmax(0, 1fr) 72px; background: var(--paper); cursor: grab; touch-action: none; }
+.sort-row .channel-id { width: 100%; max-width: none; pointer-events: none; }
+.sort-grip { display: grid; height: 100%; place-items: center; color: #64635e; font-style: normal; pointer-events: none; }
+.sort-grip .material-symbols-sharp { font-size: 25px; }
+.sort-placeholder { background: var(--soft); }
+.sort-placeholder > * { visibility: hidden; }
+.sort-overlay { position: absolute; z-index: 4; right: 0; left: 0; border-block: 1px solid var(--ink); box-shadow: 0 5px 0 rgba(17,17,17,.08); cursor: grabbing; pointer-events: none; }
+.sorting-done { border-color: var(--ink); }
 
 /* sheets */
 .sheet {
