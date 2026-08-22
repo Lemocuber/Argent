@@ -12,6 +12,7 @@ import chevronRight from '@material-symbols/svg-300/sharp/chevron_right.svg'
 import close from '@material-symbols/svg-300/sharp/close.svg'
 import deleteIcon from '@material-symbols/svg-300/sharp/delete.svg'
 import deleteForever from '@material-symbols/svg-300/sharp/delete_forever.svg'
+import dragIndicator from '@material-symbols/svg-300/sharp/drag_indicator.svg'
 import editNote from '@material-symbols/svg-300/sharp/edit_note.svg'
 import eventBusy from '@material-symbols/svg-300/sharp/event_busy.svg'
 import monitoring from '@material-symbols/svg-300/sharp/monitoring.svg'
@@ -39,6 +40,7 @@ const icons = {
   close,
   delete: deleteIcon,
   delete_forever: deleteForever,
+  drag_indicator: dragIndicator,
   edit_note: editNote,
   event_busy: eventBusy,
   monitoring,
