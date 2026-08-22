@@ -6,6 +6,7 @@ import { EntrySheet } from './components/EntrySheet.jsx'
 import { Icon } from './components/Icon.jsx'
 import { ReportView } from './components/ReportView.jsx'
 import { clearChannelOrder } from './channelOrder.js'
+import { clearGraphMode, loadGraphMode, saveGraphMode } from './graphMode.js'
 import { today } from './lib.js'
 
 const BalanceChart = lazy(() => import('./components/BalanceChart.jsx').then(module => ({ default: module.BalanceChart })))
@@ -17,7 +18,7 @@ export default function App() {
   const [account, setAccount] = useState(storedAccount)
   const [state, setState] = useState({ channels: [], entries: [] })
   const [view, setView] = useState('chart')
-  const [mode, setMode] = useState('net')
+  const [mode, setMode] = useState(loadGraphMode)
   const [date, setDate] = useState(today())
   const [channelSheet, setChannelSheet] = useState(undefined)
   const [entryChannel, setEntryChannel] = useState(null)
@@ -51,6 +52,7 @@ export default function App() {
     if (taps.count >= 10) {
       localStorage.removeItem('argent.account')
       clearChannelOrder()
+      clearGraphMode()
       location.reload()
       return
     }
@@ -65,7 +67,7 @@ export default function App() {
     <Frame>
       <main className="app-shell">
         {view === 'chart'
-          ? <Suspense fallback={<div className="chart-pending"><i /></div>}><BalanceChart {...state} mode={mode} onMode={setMode} onEmpty={() => setView('report')} /></Suspense>
+          ? <Suspense fallback={<div className="chart-pending"><i /></div>}><BalanceChart {...state} mode={mode} onMode={next => setMode(saveGraphMode(next))} onEmpty={() => setView('report')} /></Suspense>
           : <ReportView {...state} account={account} date={date} onDate={setDate} onAdd={() => setChannelSheet(null)} onEditChannel={setChannelSheet} onEntry={setEntryChannel} />}
 
         <nav className="app-nav">

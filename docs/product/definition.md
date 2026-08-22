@@ -30,7 +30,7 @@ Long-pressing the add-channel row enters an icon-only sorting mode where channel
 
 The interface is mobile-first, monochrome, monoline, divider-based, and uses chamfered geometry instead of rounded cards. Authored interface text is avoided. Material icons express controls and state; emojis are reserved for account identity. Visible text is limited to user-entered channel names and notes, dates, and numbers unless explicitly approved later. The record page moves between adjacent dates with horizontal swipes as well as its date arrows, but does not navigate beyond the current date.
 
-The browser page disables global zoom, selection, context menus, and tap highlighting. Chart nodes support crosshair inspection through multiline detail boxes. Charts initially show at most the latest 30 days. The plot itself does not zoom or pan; those gestures belong to a separate date rail below it, where pinch changes the time span and dragging moves through the complete history. Landscape screens center the full interface in a narrow mobile rail. The frontend is prepared as a PWA for later webview packaging.
+The browser page disables global zoom, selection, context menus, and tap highlighting. Chart nodes support crosshair inspection through multiline detail boxes. Charts initially show at most the latest 30 days and remember the last selected cash, total-money, or net-worth scope in browser storage. The plot itself does not zoom or pan; those gestures belong to a separate date rail below it, where pinch changes the time span and dragging moves through the complete history. Landscape screens center the full interface in a narrow mobile rail. The frontend is prepared as a PWA for later webview packaging.
 
 ## Technical shape
 
